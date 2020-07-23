@@ -66,4 +66,4 @@ userRouter.get('/', (req,res) => {
 
 
 
-module.exports = userRouter
+module.exports = userRouter;
