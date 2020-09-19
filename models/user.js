@@ -4,59 +4,51 @@ module.exports = (sequelize, DataTypes) => {
 
     const User = sequelize.define('User', {
 
-        user_firstname : {
+        firstname : {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                max: 80,
-            }    
         },
 
-        user_lastname : {
+        lastname : {
             type : DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                max : 80,
-            }
         },
 
-        user_email : {
+        email : {
             type : DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-            validate : {
-                isEmail: true,
-                max: 80,
-            }
         },
 
-        user_password : {
+        password : {
             type : DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                min : 5,
-            }         
         },
 
-        user_biography : {
+        biography : {
             type : DataTypes.STRING,
-            validate : {
-                max : 255,
-            }
         },
 
-        user_avatar : {
-            type : DataTypes.BLOB,
+        age : {
+            type : DataTypes.STRING,
+        },
+
+        postalCode : {
+            type : DataTypes.STRING,
+        },
+
+        city : {
+            type : DataTypes.STRING,   
+        },
+
+        availabilities : {
+            type : DataTypes.JSON,
+        },
+
+        avatar : {
+            type : DataTypes.STRING,
         },
         
     }, {});
+
+    User.associate = models => {
+        User.hasMany(models.Children, {foreignKey : 'userId'})
+    }
     
-    // User.associate = models => {
-    //     User.hasOne(models.Rider)
-    //     User.hasMany(models.Horse)
-    //     User.belongsToMany(models.Horse, {through: 'favorites_horses'})
-    // }
-
-
     return User;
 }
