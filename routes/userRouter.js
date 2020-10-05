@@ -239,7 +239,7 @@ userRouter.post('/add-a-child', (req, res) => {
 })
 
 
-// GET MY CHILDREN
+// GET ALL MY CHILDREN
 
 
 userRouter.get('/my-children', (req, res) => {
@@ -253,7 +253,7 @@ userRouter.get('/my-children', (req, res) => {
 
   models.Children
   .findAll({
-    attributes: [ 'sex', 'firstname', 'age', 'section', 'biography', 'avatar'],
+    attributes: [ 'id', 'sex', 'firstname', 'age', 'section', 'biography', 'avatar', 'userId'],
     where: { userId : id }
   })
   .then(function(child) {
@@ -268,5 +268,105 @@ userRouter.get('/my-children', (req, res) => {
   });
 })
 
+
+// GET ONE OF MY CHILDREN
+
+userRouter.get('/my-children/:childId', (req, res) => {
+
+  // Getting auth header
+  let headerAuth  = req.headers['authorization'];
+  let id         = jwtUtils.getUserId(headerAuth);
+
+  if (id < 0)
+    return res.status(400).json({ 'error': 'wrong token' });
+  
+  // Getting childId 
+  let childId = Number(req.params.childId)
+
+  models.Children
+  .findOne({
+    attributes: [ 'id', 'sex', 'firstname', 'age', 'section', 'biography', 'avatar'],
+    where: { 
+      userId : id,
+      id : childId }
+  })
+  .then(function(child) {
+    if (child) {
+      res.status(201).json(child);
+    } else {
+      res.status(404).json({ 'error': `enfant non trouvé` });
+    }
+  })
+  .catch(function(err) {
+    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur` });
+  });
+})
+
+
+// UPDATE MY CHILD PROFILE :
+
+userRouter.put('/my-children/:childId', (req, res) => {
+
+  // Getting auth header
+  let headerAuth  = req.headers['authorization'];
+  let ID         = jwtUtils.getUserId(headerAuth);
+
+  if (ID < 0)
+    return res.status(400).json({ 'error': 'wrong token' });
+  
+  // Getting params 
+  let childId = Number(req.params.childId)
+  let firstname = req.body.firstname
+  let sex = req.body.sex
+  let age = req.body.age
+  let section = req.body.section
+  let avatar = req.body.avatar
+  let biography = req.body.biography
+  let userId = ID
+ 
+  asyncLib.waterfall([
+    function(done) {
+      models.Children.findOne({
+        attributes: [ 'id', 'sex', 'firstname', 'age', 'section', 'biography', 'avatar', 'userId'],
+        where: { 
+          id: childId,
+          userId : userId
+         }
+      }).then(function (userFound) {
+        done(null, userFound);
+      })
+      .catch(function(err) {
+        return res.status(500).json({ 'error': `Impossible de vérifier l'utilisateur` });
+      });
+    },
+    function(childFound, done) {
+      if(childFound) {
+        childFound.update({
+          firstname: (firstname ? firstname : childFound.firstname),
+          sex : (sex ? sex : childFound.sex),
+          section : (section ? section : childFound.section), 
+          avatar: (avatar ? avatar : childFound.avatar),
+          age : (age ? age : childFound.age),
+          biography : (biography ? biography : childFound.biography),
+        }).then(function() {
+          done(childFound);
+        }).catch(function(err) {
+          res.status(500).json({ 'error': `Impossible de mettre à jour l'enfant` });
+        });
+      } else {
+        res.status(404).json({ 'error': 'Enfant non trouvé' });
+      }
+    },
+  ], function(childFound) {
+    if (childFound) {
+      return res.status(201).json(childFound);
+    } else {
+      return res.status(500).json({ 'error': `Impossible de mettre à jour les données de l'enfant` });
+    }
+  })
+
+
+
+})
 
 module.exports = userRouter;

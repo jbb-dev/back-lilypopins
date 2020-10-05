@@ -3,6 +3,7 @@ const models = require('./models');
 const app = express();
 const port = 4000;
 const userRouter = require('./routes/userRouter');
+const searchRouter = require('./routes/searchRouter');
 
 const cors = require('cors');
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 
 // Utilisation des différents routers selon les routes définies ci-dessous :
 app.use('/api/users', userRouter)
+app.use('/api/search', searchRouter)
 
 
 models
