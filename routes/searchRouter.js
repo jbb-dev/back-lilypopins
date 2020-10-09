@@ -11,6 +11,14 @@ searchRouter.use(cors())
 
 searchRouter.get('/', (req, res) => {
 
+    // Getting auth header
+    let headerAuth  = req.headers['authorization'];
+    let userId      = jwtUtils.getUserId(headerAuth);
+    
+    if (userId < 0)
+        return res.status(400).json({ 'error': 'wrong token' });
+
+
     models
     .User
     .findAll({
@@ -27,6 +35,14 @@ searchRouter.get('/', (req, res) => {
 // GET A PARENT PROFILE FROM ITS ID
 
 searchRouter.get('/:id', (req, res) => {
+
+    // Getting auth header
+    let headerAuth  = req.headers['authorization'];
+    let userId      = jwtUtils.getUserId(headerAuth);
+    
+    if (userId < 0)
+        return res.status(400).json({ 'error': 'wrong token' });
+
 
     let parentId = req.params.id
 
