@@ -16,10 +16,10 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "root",
-    "password": "s8@%0oui23sLso",
-    "database": "lilypopins",
-    "host": "127.0.0.1",
+    "username": "bbb29a96a09c72",
+    "password": "9ed85051",
+    "database": "heroku_ae6a2d2ed5a40a4",
+    "host": "mysql://b2dd91e6af94c9:91772999@us-cdbr-east-02.cleardb.com/heroku_282c091078c4e36?reconnect=true",
     "dialect": "mysql",
     "operatorsAliases": false
   }
