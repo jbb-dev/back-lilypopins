@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
             type : DataTypes.DATE           
         },
 
+        senderId : {
+            type : DataTypes.INTEGER                   
+        },
+
         contactedParentId : {
             type : DataTypes.INTEGER                   
         },
@@ -22,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {});
 
     Demand.associate = models => {
-        Demand.belongsTo(models.User, {foreignKey : 'userId'})
+        Demand.belongsToMany(models.User, { through: 'UserDemand' , foreignKey:'demandId'});
     }
     
     return Demand;

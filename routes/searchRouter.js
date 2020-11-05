@@ -3,7 +3,6 @@ const searchRouter = express.Router();
 const models = require('../models'); 
 const cors = require('cors')
 const jwtUtils = require('../utils/jwt-utils')
-const bcrypt = require('bcryptjs')
 
 searchRouter.use(cors())
 
@@ -50,7 +49,7 @@ searchRouter.get('/:id', (req, res) => {
     .User
     .findOne({
         where : { id : parentId },
-        attributes: [ 'firstname', 'lastname', 'biography', 'postalCode', 'city', 'age', 'avatar', 'availabilities' ],
+        attributes: [ 'id', 'firstname', 'lastname', 'biography', 'postalCode', 'city', 'age', 'avatar', 'availabilities' ],
         include: [{
             model : models.Children,
             attributes: [ 'id', 'sex', 'firstname', 'age', 'section', 'biography', 'avatar'],

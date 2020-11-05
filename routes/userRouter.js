@@ -5,78 +5,8 @@ const cors = require('cors')
 const jwtUtils = require('../utils/jwt-utils')
 const bcrypt = require('bcryptjs')
 const asyncLib  = require('async');
-const nodemailer = require('nodemailer')
-const smtpTransport = require('nodemailer/lib/smtp-transport')
 
 userRouter.use(cors())
-
-
-  // SEND A MESSAGE TO PARENT 
-
-  userRouter.get('/messages', (req, res) => {
-
-    // Get the userId from request
-    let userId = 1
-
-    // Find user email from the userId
-    models.User
-    .findOne({
-      attributes : ['email'],
-      where: { id : userId }
-      })
-    .then(user => {
-
-        //get the user email
-        let userEmail = user.dataValues.email
-      
-        // prepare message to send
-        let message = {
-          from: "lilypopins@test.com",
-          to: userEmail,
-          subject: "Message Test",
-          text: "Plaintext version of the message",
-          html:`  
-          <header>
-            <p>Lilypopins - Vous avez reçu une demande de garde</p>
-          </header>
-      
-          <body>
-            <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
-            <a href="http://localhost:3000/login">Se connecter</a>
-          </body> `
-        }
-    
-        // SMTP configuration for message to send
-        let transporter = nodemailer.createTransport(new smtpTransport({
-          name: 'https://atelier-de-jb.fr',
-          host: "ssl0.ovh.net",
-          port: 465,
-          secure: true, // use TLS
-          auth: {
-            user: "contact@atelier-de-jb.fr",
-            pass: "AdZ92%%l9ys7@&ksIs828sh28"
-          }
-        }))
-    
-        // Verify connection configuration
-        transporter.verify(function(error, success) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("Server is ready to take our messages");
-          }
-        });
-    
-        // Send message
-        var mailOptions = message 
-        transporter.sendMail(mailOptions, function (err) {
-            if (err) { return res.status(500).send({ msg: err.message }); }
-            res.status(200).send('A verification email has been sent to ' + userEmail + '.');
-        });
-      
-      })
-    .catch(err => res.status(500).json(`erreur : Impossible de récupérer l'email de l'utilisateur ID : ${userId}`))
-  })
 
 // // REGISTER 
 userRouter.post('/register', (req, res) => {
@@ -125,7 +55,7 @@ userRouter.post('/register', (req, res) => {
                 res.status(409).json(`erreur : L'utilisateur avec l'adresse mail ${email} existe déjà` )
             }
         })
-        .catch(err => res.status(500).json(`erreur : Impossible de vérifier l'utilisateur` ))
+        .catch(err => res.status(500).json(`erreur : Impossible de vérifier l'utilisateur => ${err}` ))
 })
 
 // LOGIN
@@ -162,7 +92,7 @@ userRouter.post('/login', (req, res) => {
       }
   }) 
   .catch(err => {
-      res.status(500).json({ 'error' : `Impossible de vérifier l'utilisateur` })
+      res.status(500).json({ 'error' : `Impossible de vérifier l'utilisateur => ${err}` })
   })
 })
 // MY PROFILE 
@@ -189,7 +119,7 @@ userRouter.get('/my-profile', (req, res) => {
     }
   })
   .catch(function(err) {
-    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur` });
+    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur => ${err}` });
   });
 })
 
@@ -239,7 +169,7 @@ userRouter.put('/my-profile', (req, res) => {
           }).then(function() {
             done(userFound);
           }).catch(function(err) {
-            res.status(500).json({ 'error': `Impossible de mettre à jour l'utilisateur` });
+            res.status(500).json({ 'error': `Impossible de mettre à jour l'utilisateur => ${err}` });
           });
         } else {
           res.status(404).json({ 'error': 'Utilisateur non trouvé' });
@@ -300,12 +230,12 @@ userRouter.post('/add-a-child', (req, res) => {
               userId : userId
             })
           .then(newChild => res.status(201).json({newChild}))
-          .catch(err => res.status(500).json(`erreur : Impossible de créer l'enfant`))
+          .catch(err => res.status(500).json(`erreur : Impossible de créer l'enfant => ${err}`))
       } else {
           res.status(409).json(`erreur : ${firstname} existe déjà` )
       }
   })
-  .catch(err => res.status(500).json(`erreur : Impossible de vérifier si l'enfant a déjà été renseigné` ))
+  .catch(err => res.status(500).json(`erreur : Impossible de vérifier si l'enfant a déjà été renseigné => ${err}` ))
 
 
 })
@@ -336,7 +266,7 @@ userRouter.get('/my-children', (req, res) => {
     }
   })
   .catch(function(err) {
-    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur` });
+    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur => ${err}` });
   });
 })
 
@@ -369,7 +299,7 @@ userRouter.get('/my-children/:childId', (req, res) => {
     }
   })
   .catch(function(err) {
-    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur` });
+    res.status(500).json({ 'error': `Impossible de récupérer les données de l'utilisateur => ${err}` });
   });
 })
 
@@ -407,7 +337,7 @@ userRouter.put('/my-children/:childId', (req, res) => {
         done(null, userFound);
       })
       .catch(function(err) {
-        return res.status(500).json({ 'error': `Impossible de vérifier l'utilisateur` });
+        return res.status(500).json({ 'error': `Impossible de vérifier l'utilisateur => ${err}` });
       });
     },
     function(childFound, done) {
@@ -422,7 +352,7 @@ userRouter.put('/my-children/:childId', (req, res) => {
         }).then(function() {
           done(childFound);
         }).catch(function(err) {
-          res.status(500).json({ 'error': `Impossible de mettre à jour l'enfant` });
+          res.status(500).json({ 'error': `Impossible de mettre à jour l'enfant => ${err}` });
         });
       } else {
         res.status(404).json({ 'error': 'Enfant non trouvé' });

@@ -49,7 +49,8 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = models => {
         User.hasMany(models.Children, {foreignKey : 'userId'})
-        User.hasMany(models.Demand, {foreignKey : 'userId'})
+        User.belongsToMany(models.Demand, { through: 'UserDemand' , foreignKey:'userId'});
+        User.belongsToMany(models.Conversation, { through: 'UserConversation' , foreignKey:'userId'});
     }
     
     return User;

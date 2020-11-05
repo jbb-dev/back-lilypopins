@@ -5,6 +5,7 @@ const port = 4000;
 const userRouter = require('./routes/userRouter');
 const searchRouter = require('./routes/searchRouter');
 const demandRouter = require('./routes/demandRouter')
+const conversationRouter = require ('./routes/conversationRouter')
 
 const cors = require('cors');
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRouter)
 app.use('/api/search', searchRouter)
 app.use('/api/demands', demandRouter)
+app.use('/api/conversations', conversationRouter)
 
 
 
