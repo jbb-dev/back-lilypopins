@@ -1,7 +1,14 @@
 const express = require('express');
 const models = require('./models'); 
 const app = express();
-const port = process.env.PORT || 4000;
+
+const dotenv = require("dotenv");
+dotenv.config();
+
+const MY_PORT = process.env.PORT || 4000;
+const MY_SECRET = process.env.APP_SECRET
+
+
 const userRouter = require('./routes/userRouter');
 const searchRouter = require('./routes/searchRouter');
 const demandRouter = require('./routes/demandRouter')
@@ -17,7 +24,7 @@ app.use(express.urlencoded({
 
 
 app.get('/', (req, res) => {
-  res.send('home')
+  res.send(MY_SECRET)
 })
 
 // Utilisation des différents routers selon les routes définies ci-dessous :
@@ -31,5 +38,5 @@ app.use('/api/conversations', conversationRouter)
 models
 .sequelize
 .sync()
-.then(() => app.listen(port, () => console.log(`App listening on port ${port}`)))
+.then(() => app.listen(MY_PORT, () => console.log(`App listening on port ${MY_PORT}`)))
 

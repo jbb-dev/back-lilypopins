@@ -5,6 +5,14 @@ const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer/lib/smtp-transport');
 const conversationRouter = require('../routes/conversationRouter');
 
+const FRONT_URL = process.env.FRONT_URL
+
+const TRANSPORTER_NAME = process.env.TRANSPORTER_NAME
+const TRANSPORTER_HOST = process.env.TRANSPORTER_HOST
+const TRANSPORTER_PORT =  process.env.TRANSPORTER_PORT
+const TRANSPORTER_SECURE =  process.env.TRANSPORTER_SECURE
+const TRANSPORTER_AUTH_USER =  process.env.TRANSPORTER_AUTH_USER
+const TRANSPORTER_AUTH_PASS =  process.env.TRANSPORTER_AUTH_PASS
 
 
 module.exports = {
@@ -139,19 +147,19 @@ module.exports = {
                 
                     <body>
                         <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
-                        <a href="http://localhost:3000/login">Se connecter</a>
+                        <a href=${FRONT_URL}>Se connecter</a>
                     </body> `
                 }
             
                 // SMTP configuration for message to send
                 let transporter = nodemailer.createTransport(new smtpTransport({
-                    name: 'https://atelier-de-jb.fr',
-                    host: "ssl0.ovh.net",
-                    port: 465,
-                    secure: true, // use TLS
+                    name: TRANSPORTER_NAME,
+                    host: TRANSPORTER_HOST,
+                    port: TRANSPORTER_PORT,
+                    secure: TRANSPORTER_SECURE, // use TLS
                     auth: {
-                        user: "contact@atelier-de-jb.fr",
-                        pass: "AdZ92%%l9ys7@&ksIs828sh28"
+                        user: TRANSPORTER_AUTH_USER,
+                        pass: TRANSPORTER_AUTH_PASS
                     }
                 }))
             
