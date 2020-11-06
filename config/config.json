@@ -8,19 +8,8 @@
     "dialect": "mysql",
     "operatorsAliases": false
   },
-  "test": {
-    "username": "root",
-    "password": "s8@%0oui23sLso",
-    "database": "lilypopins",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
-  },
   "production": {
-    "username": "bbb29a96a09c72",
-    "password": "9ed85051",
-    "database": "heroku_ae6a2d2ed5a40a4",
-    "host": "us-cdbr-east-02.cleardb.com",
+    "use_env_variable" : "JAWSDB_URL",
     "dialect": "mysql",
     "operatorsAliases": false
   }
