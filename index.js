@@ -6,8 +6,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const MY_PORT = process.env.PORT || 4000;
-const MY_SECRET = process.env.APP_SECRET
-
 
 const userRouter = require('./routes/userRouter');
 const searchRouter = require('./routes/searchRouter');
@@ -24,7 +22,7 @@ app.use(express.urlencoded({
 
 
 app.get('/', (req, res) => {
-  res.send(MY_SECRET)
+  res.send('home')
 })
 
 // Utilisation des différents routers selon les routes définies ci-dessous :
