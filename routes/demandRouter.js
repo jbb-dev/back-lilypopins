@@ -7,6 +7,7 @@ const demandManager = require('../utils/demand')
 
 demandRouter.use(cors())
 
+demandRouter.get('/test/env', demandManager.test)
 demandRouter.post('/create-new-demand', demandManager.createDemand, demandManager.sendEmailToParent)
 demandRouter.get('/my-demands', demandManager.getMyDemands)
 demandRouter.get('/kidsitting/all', demandManager.getMyGards)

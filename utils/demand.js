@@ -147,19 +147,19 @@ module.exports = {
                 
                     <body>
                         <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
-                        <a href=${FRONT_URL}>Se connecter</a>
+                        <a href='${FRONT_URL}'>Se connecter</a>
                     </body> `
                 }
             
                 // SMTP configuration for message to send
                 let transporter = nodemailer.createTransport(new smtpTransport({
-                    name: TRANSPORTER_NAME,
-                    host: TRANSPORTER_HOST,
-                    port: TRANSPORTER_PORT,
-                    secure: TRANSPORTER_SECURE, // use TLS
+                    name: 'https://atelier-de-jb.fr',
+                    host: 'ssl0.ovh.net',
+                    port: 465,
+                    secure: true, // use TLS
                     auth: {
-                        user: TRANSPORTER_AUTH_USER,
-                        pass: TRANSPORTER_AUTH_PASS
+                        user: 'contact@atelier-de-jb.fr',
+                        pass: 'AdZ92%%l9ys7@&ksIs828sh28'
                     }
                 }))
             
@@ -241,6 +241,21 @@ module.exports = {
         .then(demandsFound => res.status(200).json(demandsFound))
         .catch(err => res.status(500).json(`erreur : Impossible d'accéder aux demandes de l'utilisateur : ${userId} => ${err}`))
         
+    },
+
+    test : function (req, res) {
+
+        console.log('bonne route')
+        res.json({
+            front : FRONT_URL,
+            name: TRANSPORTER_NAME,
+            host: TRANSPORTER_HOST,
+            port: TRANSPORTER_PORT,
+            secure: TRANSPORTER_SECURE, // use TLS
+            auth: {
+                user: TRANSPORTER_AUTH_USER,
+                pass: TRANSPORTER_AUTH_PASS
+            }})
     }
 
 
