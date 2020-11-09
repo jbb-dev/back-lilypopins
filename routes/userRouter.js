@@ -184,6 +184,23 @@ userRouter.put('/my-profile', (req, res) => {
     })
 })
 
+
+// GET MY USER ID
+
+userRouter.get('/myId', (req, res) => {
+
+  // Getting auth header
+  let headerAuth  = req.headers['authorization'];
+  let id         = jwtUtils.getUserId(headerAuth);
+
+  if (id < 0)
+    return res.status(400).json({ 'error': 'wrong token' });
+
+  res.status(200).json(id)  
+})
+
+
+
 // MANAGE CHILDREN
 
   // CREATE A CHILD

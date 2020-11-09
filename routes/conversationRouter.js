@@ -6,8 +6,8 @@ const conversationManager = require('../utils/conversationManager');
 conversationRouter.use(cors())
 
 conversationRouter.get('/:idConversation', conversationManager.getOneConversation)
+conversationRouter.post('/:idConversation/newMessage', conversationManager.postMessage)
     
-
 
 
 module.exports = conversationRouter;
