@@ -120,7 +120,6 @@ module.exports = {
 
         let contactedParentId = req.body[0] 
 
-    
         // Find the email from the parentId
         models.User
         .findOne({
@@ -138,17 +137,21 @@ module.exports = {
                 let message = {
                     from: "lilypopins@test.com",
                     to: userEmail,
-                    subject: "Message Test",
+                    subject: "Vous avez reçu une demande de garde",
                     text: "Plaintext version of the message",
                     html:`  
-                    <header>
-                        <p>Lilypopins - Vous avez reçu une demande de garde</p>
+                    <head>
+                    <meta charset="UTF-8">
+                    <title>Vous avez reçu une demande de garde</title>
+                    <header style="background-color: violet; height: 200px">
+                      <p style="color : blue">Lilypopins - Vous avez reçu une demande de garde</p>
                     </header>
-                
-                    <body>
-                        <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
-                        <a href='${FRONT_URL}'>Se connecter</a>
-                    </body> `
+                </head>
+              
+                <body>
+                  <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
+                  <a href="http://localhost:3000/login">Se connecter</a>
+                </body>               `
                 }
             
                 // SMTP configuration for message to send
@@ -202,13 +205,16 @@ module.exports = {
             where : {
                 senderId : userId,
                 },
+            order: [['id', 'DESC']],
             include : {
                 model : models.User,
                 where : {
                     [Op.not] : [{id : userId}]
                     },
-                attributes : ['firstname', 'avatar', 'id'],
-            }
+            attributes : ['firstname', 'avatar', 'id'],
+
+            },
+
         })
         .then(demandsFound => res.status(200).json(demandsFound))
         .catch(err => res.status(500).json(`erreur : Impossible d'accéder aux demandes de l'utilisateur : ${userId} => ${err}`))
@@ -230,6 +236,7 @@ module.exports = {
             where : {
                 contactedParentId : userId
             },
+            order: [['id', 'DESC']],
             include : {
                 model : models.User,
                 where : {
@@ -242,22 +249,53 @@ module.exports = {
         .catch(err => res.status(500).json(`erreur : Impossible d'accéder aux demandes de l'utilisateur : ${userId} => ${err}`))
         
     },
+    
+    deleteGard : function (req, res) {
 
-    test : function (req, res) {
+        // Getting auth header
+        let headerAuth  = req.headers['authorization'];
+        let userId      = jwtUtils.getUserId(headerAuth);
 
-        console.log('bonne route')
-        res.json({
-            front : FRONT_URL,
-            name: TRANSPORTER_NAME,
-            host: TRANSPORTER_HOST,
-            port: TRANSPORTER_PORT,
-            secure: TRANSPORTER_SECURE, // use TLS
-            auth: {
-                user: TRANSPORTER_AUTH_USER,
-                pass: TRANSPORTER_AUTH_PASS
-            }})
+        if (userId < 0)
+            return res.status(400).json({ 'error': 'wrong token' });
+
+        // Get params :
+        let demandId = req.params.id
+
+        // Delete demand in bdd :
+        models
+        .Demand
+        .destroy({ where : { id : demandId } })
+        .then(res.status(200).send(`La demande de garde a bien été supprimée`))
+        .catch(err => res.status(500).json(`erreur : Impossible de supprimer la demande de garde : => ${err}`))
+        
+    },
+
+    acceptGard : function (req, res) {
+
+        
+        // Getting auth header
+        let headerAuth  = req.headers['authorization'];
+        let userId      = jwtUtils.getUserId(headerAuth);
+
+        if (userId < 0)
+            return res.status(400).json({ 'error': 'wrong token' });
+
+        console.log('test route accept')
+
+        // // Get params :
+        // let demandId = req.params.id
+
+        // models
+        // .Demand
+        // .update(
+        //     { status : 'confirmée'},
+        //     { where : { id : demandId } 
+        // })
+        // .then(res.status(200).send(`La demande de garde a bien été confirmée`))
+        // .catch(err => res.status(500).json(`erreur : Impossible d'accéder à la demande de garde : => ${err}`))
+
     }
-
 
 }
 

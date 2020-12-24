@@ -5,8 +5,10 @@ const conversationManager = require('../utils/conversationManager');
 
 conversationRouter.use(cors())
 
-conversationRouter.get('/:idConversation', conversationManager.getOneConversation)
-conversationRouter.post('/:idConversation/newMessage', conversationManager.postMessage)
+conversationRouter.get('/:idConversation', conversationManager.getOneConversation, conversationManager.makeMessageIsRead)
+conversationRouter.post('/user/:userId/newMessage', conversationManager.postMessage)
+conversationRouter.get('/find/:userId', conversationManager.getConversationId)
+conversationRouter.get('/:userId/unreadMsg', conversationManager.countUnreadMessages)
     
 
 

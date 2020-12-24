@@ -58,6 +58,10 @@ userRouter.post('/register', (req, res) => {
         .catch(err => res.status(500).json(`erreur : Impossible de vérifier l'utilisateur => ${err}` ))
 })
 
+// USER EMAIL VERIFICATION
+
+
+
 // LOGIN
 userRouter.post('/login', (req, res) => {
 
