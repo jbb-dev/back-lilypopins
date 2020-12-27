@@ -1,9 +1,7 @@
 const express = require('express');
 const demandRouter = express.Router();
 const cors = require('cors')
-const demandManager = require('../utils/demand')
-
-
+const demandManager = require('../controller/demandController')
 
 demandRouter.use(cors())
 
@@ -11,7 +9,7 @@ demandRouter.post('/create-new-demand', demandManager.createDemand, demandManage
 demandRouter.get('/my-demands', demandManager.getMyDemands)
 demandRouter.get('/kidsitting/all', demandManager.getMyGards)
 demandRouter.delete('/delete/:id', demandManager.deleteGard, demandManager.sendEmailToParent)
-demandRouter.put('/accept/:id', demandManager.acceptGard)
+demandRouter.get('/accept/:id', demandManager.acceptGard)
 
 
      

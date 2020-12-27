@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const jwtUtils = require('../utils/jwt-utils')
 const nodemailer = require('nodemailer')
 const smtpTransport = require('nodemailer/lib/smtp-transport');
-const conversationRouter = require('../routes/conversationRouter');
 
 const FRONT_URL = process.env.FRONT_URL
 
@@ -141,28 +140,28 @@ module.exports = {
                     text: "Plaintext version of the message",
                     html:`  
                     <head>
-                    <meta charset="UTF-8">
-                    <title>Vous avez reçu une demande de garde</title>
-                    <header style="background-color: violet; height: 200px">
-                      <p style="color : blue">Lilypopins - Vous avez reçu une demande de garde</p>
-                    </header>
-                </head>
+                        <meta charset="UTF-8">
+                        <title>Vous avez reçu une demande de garde</title>
+                        <header style="background-color: violet; height: 200px">
+                        <p style="color : blue">Lilypopins - Vous avez reçu une demande de garde</p>
+                        </header>
+                    </head>
               
-                <body>
-                  <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
-                  <a href="http://localhost:3000/login">Se connecter</a>
-                </body>               `
+                    <body>
+                        <p>Vous avez reçu une nouvelle demande de garde. Pour la consulter, connectez-vous dès à présent sur votre compte</p>  
+                        <a href=${FRONT_URL}>Se connecter</a>
+                    </body>`
                 }
             
                 // SMTP configuration for message to send
                 let transporter = nodemailer.createTransport(new smtpTransport({
-                    name: 'https://atelier-de-jb.fr',
-                    host: 'ssl0.ovh.net',
-                    port: 465,
-                    secure: true, // use TLS
+                    name: TRANSPORTER_NAME,
+                    host: TRANSPORTER_HOST,
+                    port: TRANSPORTER_PORT,
+                    secure: TRANSPORTER_SECURE, // use TLS
                     auth: {
-                        user: 'contact@atelier-de-jb.fr',
-                        pass: 'AdZ92%%l9ys7@&ksIs828sh28'
+                        user: TRANSPORTER_AUTH_USER,
+                        pass: TRANSPORTER_AUTH_PASS
                     }
                 }))
             
@@ -171,7 +170,7 @@ module.exports = {
                     if (error) {
                         console.log(error);
                     } else {
-                        console.log("Server is ready to take our messages");
+                        console.log(`Server is ready to take our messages to ${userEmail}`);
                     }
                 });
             
@@ -272,8 +271,6 @@ module.exports = {
     },
 
     acceptGard : function (req, res) {
-
-        
         // Getting auth header
         let headerAuth  = req.headers['authorization'];
         let userId      = jwtUtils.getUserId(headerAuth);
@@ -281,19 +278,18 @@ module.exports = {
         if (userId < 0)
             return res.status(400).json({ 'error': 'wrong token' });
 
-        console.log('test route accept')
+        // Get params :
+        let demandId = req.params.id
+        console.log(demandId)
 
-        // // Get params :
-        // let demandId = req.params.id
-
-        // models
-        // .Demand
-        // .update(
-        //     { status : 'confirmée'},
-        //     { where : { id : demandId } 
-        // })
-        // .then(res.status(200).send(`La demande de garde a bien été confirmée`))
-        // .catch(err => res.status(500).json(`erreur : Impossible d'accéder à la demande de garde : => ${err}`))
+        models
+        .Demand
+        .update(
+            { status : 'confirmed'},
+            { where : { id : demandId } 
+        })
+        .then(res.status(200).send(`La demande de garde a bien été confirmée, merci !`))
+        .catch(err => res.status(500).json(`erreur : Impossible d'accéder à la demande de garde : => ${err}`))
 
     }
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const conversationRouter = express.Router();
 const cors = require('cors');
-const conversationManager = require('../utils/conversationManager');
+const conversationManager = require('../controller/conversationManager');
 
 conversationRouter.use(cors())
 
