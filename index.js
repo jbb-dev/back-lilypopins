@@ -31,8 +31,7 @@ app.use('/api/search', searchRouter)
 app.use('/api/demands', demandRouter)
 app.use('/api/conversations', conversationRouter)
 
-
-
+// Connection à la BDD
 models
 .sequelize
 .sync()
