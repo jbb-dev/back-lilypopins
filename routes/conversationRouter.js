@@ -1,14 +1,14 @@
 const express = require('express');
 const conversationRouter = express.Router();
 const cors = require('cors');
-const conversationManager = require('../controller/conversationManager');
+const conversationController = require('../controller/conversationController');
 
 conversationRouter.use(cors())
 
-conversationRouter.get('/:idConversation', conversationManager.getOneConversation, conversationManager.makeMessageIsRead)
-conversationRouter.post('/user/:userId/newMessage', conversationManager.postMessage)
-conversationRouter.get('/find/:userId', conversationManager.getConversationId)
-conversationRouter.get('/:userId/unreadMsg', conversationManager.countUnreadMessages)
+conversationRouter.get('/:idConversation', conversationController.getOneConversation, conversationController.makeMessageIsRead)
+conversationRouter.post('/user/:userId/newMessage', conversationController.postMessage)
+conversationRouter.get('/find/:userId', conversationController.getConversationId)
+conversationRouter.get('/:userId/unreadMsg', conversationController.countUnreadMessages)
     
 
 
