@@ -4,59 +4,59 @@ module.exports = (sequelize, DataTypes) => {
 
     const User = sequelize.define('User', {
 
-        user_firstname : {
+        firstname : {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                max: 80,
-            }    
         },
 
-        user_lastname : {
+        lastname : {
             type : DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                max : 80,
-            }
         },
 
-        user_email : {
+        email : {
             type : DataTypes.STRING,
-            unique: true,
-            allowNull: false,
-            validate : {
-                isEmail: true,
-                max: 80,
-            }
         },
 
-        user_password : {
+        isVerified : {
+            type : DataTypes.BOOLEAN,
+            defaultValue : false,
+        },
+
+        password : {
             type : DataTypes.STRING,
-            allowNull: false,
-            validate : {
-                min : 5,
-            }         
         },
 
-        user_biography : {
+        biography : {
             type : DataTypes.STRING,
-            validate : {
-                max : 255,
-            }
         },
 
-        user_avatar : {
-            type : DataTypes.BLOB,
+        age : {
+            type : DataTypes.STRING,
+        },
+
+        postalCode : {
+            type : DataTypes.STRING,
+        },
+
+        city : {
+            type : DataTypes.STRING,   
+        },
+
+        availabilities : {
+            type : DataTypes.JSON,
+        },
+
+        avatar : {
+            type : DataTypes.STRING,
+            defaultValue : "https://static.wixstatic.com/media/8fa7e6_09cf11c3e4584b259145ecc0b2633997.jpg/v1/fill/w_224,h_224,al_c,lg_1,q_80/8fa7e6_09cf11c3e4584b259145ecc0b2633997.webp"
         },
         
     }, {});
+
+    User.associate = models => {
+        User.hasMany(models.Children, {foreignKey : 'userId'})
+        User.belongsToMany(models.Demand, { through: 'UserDemand' , foreignKey:'userId'});
+        User.belongsToMany(models.Conversation, { through: 'UserConversation' , foreignKey:'userId'});
+    }
     
-    // User.associate = models => {
-    //     User.hasOne(models.Rider)
-    //     User.hasMany(models.Horse)
-    //     User.belongsToMany(models.Horse, {through: 'favorites_horses'})
-    // }
-
-
     return User;
 }
